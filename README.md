@@ -10,6 +10,6 @@ Recognition (OCR) on uploaded files. The process is as follows:
 5. The user downloads the file
 6. The file is deleted from AWS S3 after an hour
 
-As a web service, this product only offers a graphic user interface
+As a web service, this product only offers a graphical user interface
 for end users.
 
