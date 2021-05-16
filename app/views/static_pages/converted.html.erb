@@ -1,0 +1,17 @@
+<% provide(:title, "Converted File") %>
+
+<br>
+<br>
+
+<div class="row text-center">
+	<h2>Download your converted file</h2>
+	<%= link_to rails_blob_path(@uploaded_file.file, disposition: 'attachment') do%>
+		<button type="button" class="btn btn-primary">Download Converted PDF</button>
+	<%end%>
+</div>
+
+<hr>
+
+<div class="row min-vh-100">
+	<iframe src="<%= pdfjs.full_path(file: rails_blob_path(@uploaded_file.file)) %>"></iframe>
+</div>

@@ -6,5 +6,52 @@
 <div class="row text-center">
 	<h2>The best OCR tool to Convert PDF to Text</h2>
 	<h5 id="subtitle">Select text in scanned PDF files or download text to a Word file using online OCR</h5>
-
 </div>
+
+<br>
+
+<% if @uploaded_file.errors.any? %>
+  <div class="alert alert-danger">
+    <% @uploaded_file.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+  </div>
+<% end %>
+
+<br>
+
+<div class="row">
+	<div class="col md-4 text-center">
+		<h5>Step 1: Upload File</h5>
+		<hr>
+	</div>
+	<div class="col md-4 text-center">
+		<h5>Step 2: Select Language</h5>
+		<hr>
+	</div>
+	<div class="col md-4 text-center">
+		<h5>Step 3: Convert File</h5>
+		<hr>
+	</div>
+</div>
+
+<%= form_with model: @uploaded_file do |f| %>
+<div class="row">
+	<div class="col md-4 text-center">
+		<%= f.file_field :file, class: "form-control" %>
+	</div>
+	<div class="col md-4 text-center">
+		<%= f.select :ocr_language_id, OcrLanguage.all.collect { |p| [ p.language, p.id ] }, { selected: "50" }, { class: "form-select" } %>
+	</div>
+	<div class="col md-4 text-center">
+		<%= f.submit "Convert", class: "btn btn-success w-100" %>
+	</div>
+</div>
+<% end %>
+
+
+
+
+
+
+	
