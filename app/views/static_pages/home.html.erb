@@ -41,13 +41,16 @@
 		<%= f.file_field :file, class: "form-control" %>
 	</div>
 	<div class="col md-4 text-center">
-		<%= f.select :ocr_language_id, OcrLanguage.all.collect { |p| [ p.language, p.id ] }, { selected: "50" }, { class: "form-select" } %>
+		<%= f.select :ocr_language_id, OcrLanguage.all.collect { |p| [ p.language, p.id ] }, { selected: "5" }, { class: "form-select" } %>
 	</div>
 	<div class="col md-4 text-center">
 		<%= f.submit "Convert", class: "btn btn-success w-100" %>
 	</div>
 </div>
 <% end %>
+
+<p><%= @session.id %></p>
+
 
 
 
