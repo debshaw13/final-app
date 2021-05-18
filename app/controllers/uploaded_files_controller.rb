@@ -12,6 +12,13 @@ class UploadedFilesController < ApplicationController
 		end
 	end
 
+  def destroy
+    @uploaded_file = UploadedFile.find(params[:id])
+    @uploaded_file.destroy
+
+    redirect_to root_path
+  end
+
 	private
 
 		def uploaded_file_params

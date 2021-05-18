@@ -49,7 +49,43 @@
 </div>
 <% end %>
 
-<p><%= @session.id %></p>
+<br>
+<br>
+
+<% if @session.uploaded_files.any? %>
+	<div class="row">
+		<div class="text-center">
+			<h4>Your converted files</h4>
+			<hr>
+		</div>
+
+		<div> 
+			<table class="table table-striped">
+				<thead class="table-dark">
+					<tr>
+						<th scope="col">File name</th>
+						<th scope="col">Uploaded At</th>
+						<th scope="col"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<% @session.uploaded_files.each do |session_file| %>
+					<tr>
+						<td><%= link_to session_file.file.filename, converted_path(session_file.id) %></td>
+						<td><%= time_ago_in_words(session_file.created_at) + ' ago' %></td>
+						<td class="px-4"><span style="float: right;">
+							<%= button_to uploaded_file_path(session_file.id), method: :delete, confirm: "Are you sure?" do %>
+              	<i class="far fa-trash-alt"></i>
+              <% end %>
+						</span></td>
+					</tr>
+					<% end %>
+				</tbody>
+			</table>
+		</div>
+	</div>
+<% end %>
+	
 
 
 

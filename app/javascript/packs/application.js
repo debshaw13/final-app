@@ -22,3 +22,5 @@ require("packs/custom")
 
 import jquery from 'jquery';
 window.$ = window.jquery = jquery;
+
+import "@fortawesome/fontawesome-free/js/all";
