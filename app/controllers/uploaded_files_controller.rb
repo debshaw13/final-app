@@ -16,7 +16,7 @@ class UploadedFilesController < ApplicationController
 		else
 			@uploaded_file = UploadedFile.new
 			@session.decrement(:count).save
-			@uploaded_file.errors.add(:base, "You are out of free credits. Please purchase a premium plan.")
+			@uploaded_file.errors.add(:base, "You are out of free credits. Please sign up for an account.")
 			render "static_pages/home"
 		end
 	end
