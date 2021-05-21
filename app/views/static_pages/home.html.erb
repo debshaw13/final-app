@@ -1,6 +1,12 @@
 <% provide(:title, "Home") %>
 
-<br>
+<% if @uploaded_file.errors.any? %>
+  <div class="alert alert-danger">
+    <% @uploaded_file.errors.full_messages.each do |msg| %>
+      <div><%= msg %></div>
+    <% end %>
+  </div>
+<% end %>
 <br>
 
 <div class="row text-center">
@@ -9,15 +15,6 @@
 </div>
 
 <br>
-
-<% if @uploaded_file.errors.any? %>
-  <div class="alert alert-danger">
-    <% @uploaded_file.errors.full_messages.each do |msg| %>
-      <li><%= msg %></li>
-    <% end %>
-  </div>
-<% end %>
-
 <br>
 
 <div class="row">
@@ -35,7 +32,7 @@
 	</div>
 </div>
 
-<%= form_with model: @uploaded_file do |f| %>
+<%= form_with model: @uploaded_file, local: true do |f| %>
 <div class="row">
 	<div class="col md-4 text-center">
 		<%= f.file_field :file, class: "form-control" %>
@@ -74,7 +71,7 @@
 						<td><%= link_to session_file.file.filename, converted_path(session_file.id) %></td>
 						<td><%= time_ago_in_words(session_file.created_at) + ' ago' %></td>
 						<td class="px-4"><span style="float: right;">
-							<%= button_to uploaded_file_path(session_file.id), method: :delete, confirm: "Are you sure?" do %>
+							<%= link_to uploaded_file_path(session_file.id), method: :delete do %>
               	<i class="far fa-trash-alt"></i>
               <% end %>
 						</span></td>

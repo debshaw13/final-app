@@ -7,8 +7,11 @@ require("turbolinks").start()
 require("@rails/activestorage").start()
 require("channels")
 require("jquery")
-require("bootstrap")
+import 'bootstrap/dist/js/bootstrap'
+import 'bootstrap/dist/css/bootstrap'
+require("stylesheets/application.scss")
 require("packs/custom")
+
 
 
 // Uncomment to copy all static images under ../images to the output folder and reference
@@ -19,8 +22,10 @@ require("packs/custom")
 // const imagePath = (name) => images(name, true)
 
 //= require activestorage
+//= require jquery_ujs
 
 import jquery from 'jquery';
 window.$ = window.jquery = jquery;
 
 import "@fortawesome/fontawesome-free/js/all";
+import {} from 'jquery-ujs'
