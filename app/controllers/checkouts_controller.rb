@@ -9,5 +9,10 @@ class CheckoutsController < ApplicationController
       mode: "subscription",
       line_items: "price_1IviMq2NAuZraGpQvHWbPDZ1"
     )
+
+    @checkout_session_monthly = current_user.payment_processor.checkout(
+      mode: "subscription",
+      line_items: "price_1J3dWj2NAuZraGpQh8mp6AFZ"
+    )
   end
 end
