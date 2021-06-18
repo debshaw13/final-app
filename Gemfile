@@ -35,6 +35,7 @@ gem 'devise'
 gem 'pay', '~> 2.0'
 gem 'stripe', '< 6.0', '>= 2.8'
 gem 'systemcall'
+gem 'dotenv-rails'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
