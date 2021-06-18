@@ -53,9 +53,45 @@ class UploadedFilesController < ApplicationController
       path = ActiveStorage::Blob.service.send(:path_for, @uploaded_file.file.key)
       folder = SecureRandom.urlsafe_base64
 
+      language = case @uploaded_file.ocr_language_id
+        when 1
+          'ara'
+        when 2
+          'chi_sim'
+        when 3
+          'chi_tra'
+        when 4
+          'deu'
+        when 5
+          'eng'
+        when 6
+          'fra'
+        when 7
+          'hin'
+        when 8
+          'ind'
+        when 9
+          'ita'
+        when 10
+          'jpn'
+        when 11
+          'kor'
+        when 12
+          'por'
+        when 13
+          'rus'
+        when 14
+          'spa'
+        when 15
+          'tur'
+      end
+
+      puts language.inspect
+      puts "SEEEE MEEE!!!!"
+
       SystemCall.call('mkdir ' + folder)
       SystemCall.call('pdftoppm -r 300 -gray -tiff ' + path + ' ' + folder + '/image_file')
-      SystemCall.call('for f in ' + folder + '/*.tif;do tesseract -c textonly_pdf=1 "$f" ' + folder +'/"$(basename "$f" .tif)" pdf;done')
+      SystemCall.call('for f in ' + folder + '/*.tif;do tesseract -l ' + language + ' -c textonly_pdf=1 "$f" ' + folder +'/"$(basename "$f" .tif)" pdf;done')
       SystemCall.call('rm ' + folder + '/*.tif')
       SystemCall.call('qpdf --empty --pages ' + folder + '/*.pdf -- ' + folder + '/merged.pdf')
       SystemCall.call('qpdf ' + path + ' --underlay ' + folder + '/merged.pdf -- ' + folder + '/output.pdf')
