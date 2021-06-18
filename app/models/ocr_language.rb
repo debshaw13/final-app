@@ -1,3 +1,3 @@
 class OcrLanguage < ApplicationRecord
-	has_many :uploaded_files
+  has_many :uploaded_files
 end

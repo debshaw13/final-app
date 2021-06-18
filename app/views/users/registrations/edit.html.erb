@@ -4,9 +4,14 @@
 
 <h2>Edit <%= resource_name.to_s.humanize %></h2>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-  
+<% if current_user and current_user.subscribed? %>
+  <br>
+  <%= link_to "Billing Preferences", @portal_session.url, class: "btn btn-secondary" %>
+  <br>
+  <br>
+<% end %>
 
+<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
   <div class="row">
     <div class="col-md-12 py-2">
       <div class="col-md-4">
@@ -53,15 +58,5 @@
 
 
   <% end %>
-
-  <br>
-
-  <h3>Delete my account</h3>
-
-  <div class="col-md-12 py-2">
-    <div class="col-md-4">
-      <p>Looking to delete your account?<%= button_to "Delete my account", registration_path(resource_name), method: :delete, class: "btn btn-danger w-100" %></p>
-    </div>
-  </div>
 
   <%= link_to "Back", :back %>

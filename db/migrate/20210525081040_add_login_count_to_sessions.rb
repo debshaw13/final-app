@@ -1,0 +1,5 @@
+class AddLoginCountToSessions < ActiveRecord::Migration[6.0]
+  def change
+  	add_column :sessions, :login_count, :integer, default: 0
+  end
+end

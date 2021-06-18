@@ -12,7 +12,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # POST /resource
   def create
     super
-    @session.update(count: 0)
+    @session.update(login_count: 0)
   end
 
   # GET /resource/edit

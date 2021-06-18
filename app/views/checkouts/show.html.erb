@@ -1,0 +1,40 @@
+<% provide(:title, "Pricing Plans") %>
+
+<div class="row text-center">
+  <h2>Online OCR</h2>
+  <h5 id="subtitle">The best OCR tool to convert your scanned documents</h5>
+</div>
+
+<br>
+
+<div class="row">
+  <div class="col md-1">
+  </div>
+  <div class="col md-5 px-0">
+    <h5 class="bg-dark text-white py-2 text-center mx-0">Free Plan</h5>
+    <h4 class="text-center">$0</h4>
+    <br>
+    <hr>
+    <p class="px-2">Online OCR converter</p>
+    <p class="px-2">Convert up to 6 files</p>
+    <p class="px-2">Limited file storage</p>
+    <div class="text-center">
+      <button class="btn border-primary">Current plan</button>
+    </div>
+  </div>
+  <div class="col md-5 border px-0">
+    <h5 class="bg-dark text-white py-2 text-center">Premium Plan</h5>
+    <h4 class="text-center">$4.17/month</h4>
+    <p id="subtitle" class="text-center">($50/year)</p>
+    <hr>
+    <p class="px-2">Online OCR converter</p>
+    <p class="px-2"><b>Unlimited</b> conversions</p>
+    <p class="px-2"><b>Unlimited</b> file storage</p>
+    <div class="text-center">
+      <%= render partial: "pay/stripe/checkout_button", locals: { session: @checkout_session_annual, title: "Choose plan", class: "btn btn-success" } %>
+    </div>
+    <br>
+  </div>
+  <div class="col md-1">
+  </div>
+</div>

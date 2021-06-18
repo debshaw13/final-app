@@ -32,6 +32,9 @@ gem 'bootstrap', '~> 5.0.0.beta3'
 gem 'execjs', '2.7.0'
 gem 'pdfjs_viewer-rails'
 gem 'devise'
+gem 'pay', '~> 2.0'
+gem 'stripe', '< 6.0', '>= 2.8'
+gem 'systemcall'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

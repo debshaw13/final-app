@@ -10,84 +10,81 @@
 <br>
 
 <div class="row text-center">
-	<h2>The best OCR tool to Convert PDF to Text</h2>
-	<h5 id="subtitle">Select text in scanned PDF files or download text to a Word file using online OCR</h5>
+  <h2>The best OCR tool to Convert PDF to Text</h2>
+  <h5 id="subtitle">Select text in scanned PDF files or download text to a Word file using online OCR</h5>
 </div>
 
 <br>
 <br>
 
 <div class="row">
-	<div class="col md-4 text-center">
-		<h5>Step 1: Upload File</h5>
-		<hr>
-	</div>
-	<div class="col md-4 text-center">
-		<h5>Step 2: Select Language</h5>
-		<hr>
-	</div>
-	<div class="col md-4 text-center">
-		<h5>Step 3: Convert File</h5>
-		<hr>
-	</div>
+  <div class="col md-4 text-center">
+    <h5>Step 1: Upload File</h5>
+    <hr>
+  </div>
+  <div class="col md-4 text-center">
+    <h5>Step 2: Select Language</h5>
+    <hr>
+  </div>
+  <div class="col md-4 text-center">
+    <h5>Step 3: Convert File</h5>
+    <hr>
+  </div>
 </div>
 
 <%= form_with model: @uploaded_file, local: true do |f| %>
 <div class="row">
-	<div class="col md-4 text-center">
-		<%= f.file_field :file, class: "form-control" %>
-	</div>
-	<div class="col md-4 text-center">
-		<%= f.select :ocr_language_id, OcrLanguage.all.collect { |p| [ p.language, p.id ] }, { selected: "5" }, { class: "form-select" } %>
-	</div>
-	<div class="col md-4 text-center">
-		<%= f.submit "Convert", class: "btn btn-success w-100" %>
-	</div>
+  <div class="col md-4 text-center">
+    <%= f.file_field :file, class: "form-control" %>
+  </div>
+  <div class="col md-4 text-center">
+    <%= f.select :ocr_language_id, OcrLanguage.all.collect { |p| [ p.language, p.id ] }, { selected: "5" }, { class: "form-select" } %>
+  </div>
+  <div class="col md-4 text-center">
+    <%= f.submit "Convert", class: "btn btn-success w-100" %>
+  </div>
 </div>
 <% end %>
 
 <br>
 <br>
 
-<% if @session.uploaded_files.any? %>
-	<div class="row">
-		<div class="text-center">
-			<h4>Your converted files</h4>
-			<hr>
-		</div>
-
-		<div> 
-			<table class="table table-striped">
-				<thead class="table-dark">
-					<tr>
-						<th scope="col">File name</th>
-						<th scope="col">Uploaded At</th>
-						<th scope="col"></th>
-					</tr>
-				</thead>
-				<tbody>
-					<% @session.uploaded_files.each do |session_file| %>
-					<tr>
-						<td><%= link_to session_file.file.filename, converted_path(session_file.id) %></td>
-						<td><%= time_ago_in_words(session_file.created_at) + ' ago' %></td>
-						<td class="px-4"><span style="float: right;">
-							<%= link_to uploaded_file_path(session_file.id), id: "trashcan", method: :delete do %>
-              					<i class="far fa-trash-alt"></i>
-              				<% end %>
-						</span></td>
-					</tr>
-					<% end %>
-				</tbody>
-			</table>
-		</div>
-	</div>
+<% if current_user %>
+  <% @created_files = current_user.uploaded_files %>
+<% else %>
+  <% @created_files = @session.uploaded_files.where(user_id: nil) %>
 <% end %>
-	
 
+<% if @created_files.any? %>
+  <div class="row">
+    <div class="text-center">
+      <h4>Your converted files</h4>
+      <hr>
+    </div>
 
-
-
-
-
-
-	
+    <div>
+      <table class="table table-striped">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">File name</th>
+            <th scope="col">Uploaded At</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @created_files.each do |created_file| %>
+          <tr>
+            <td><%= link_to created_file.file.filename, converted_path(created_file.id) %></td>
+            <td><%= time_ago_in_words(created_file.created_at) + ' ago' %></td>
+            <td class="px-4"><span style="float: right;">
+              <%= link_to uploaded_file_path(created_file.id), id: "trashcan", method: :delete do %>
+                        <i class="far fa-trash-alt"></i>
+                      <% end %>
+            </span></td>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>
