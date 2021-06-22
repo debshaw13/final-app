@@ -4,10 +4,13 @@ class UploadedFilesController < ApplicationController
     if eligible_user
       @uploaded_file = UploadedFile.create(uploaded_file_params)
       @uploaded_file.file.attach(params[:uploaded_file][:file])
+      #@progress = @uploaded_file.progress
+      #@progress = 10
       set_session_and_user_id
 
       if @uploaded_file.save
         increment_count
+        #@progress = 20
         convert_file
         redirect_to converted_path(@uploaded_file.id)
       else
@@ -18,6 +21,13 @@ class UploadedFilesController < ApplicationController
       no_credits_message
       render "static_pages/home"
     end
+  end
+
+  def progress
+    @uploaded_file = UploadedFile.find(params[:id])
+    @progress = @uploaded_file.progress
+
+    render partial: 'file_progress'
   end
 
   def destroy
@@ -50,8 +60,11 @@ class UploadedFilesController < ApplicationController
     end
 
     def convert_file
-      path = ActiveStorage::Blob.service.send(:path_for, @uploaded_file.file.key)
       folder = SecureRandom.urlsafe_base64
+      SystemCall.call('mkdir ' + folder)
+
+      s3_downloader(ENV['AWS_BUCKET'], @uploaded_file.file.key, Rails.root.to_s + '/' + folder + '/' + 'input' + '.pdf')
+      path = Rails.root.to_s + '/' + folder + '/' + 'input.pdf'
 
       language = case @uploaded_file.ocr_language_id
         when 1
@@ -86,18 +99,33 @@ class UploadedFilesController < ApplicationController
           'tur'
       end
 
-      puts language.inspect
-      puts "SEEEE MEEE!!!!"
-
-      SystemCall.call('mkdir ' + folder)
-      SystemCall.call('pdftoppm -r 300 -gray -tiff ' + path + ' ' + folder + '/image_file')
+      #@progress = 30
+      SystemCall.call('pdftoppm -r 300 -gray -tiff ' + folder + '/input.pdf ' + folder + '/image_file')
+      #@progress = 50
       SystemCall.call('for f in ' + folder + '/*.tif;do tesseract -l ' + language + ' -c textonly_pdf=1 "$f" ' + folder +'/"$(basename "$f" .tif)" pdf;done')
+      #@progress = 70
       SystemCall.call('rm ' + folder + '/*.tif')
+      #@progress = 80
       SystemCall.call('qpdf --empty --pages ' + folder + '/*.pdf -- ' + folder + '/merged.pdf')
+      #@progress = 90
       SystemCall.call('qpdf ' + path + ' --underlay ' + folder + '/merged.pdf -- ' + folder + '/output.pdf')
+      #@progress = 100
 
       @uploaded_file.file.attach(io: File.open("#{Rails.root}/" + folder + "/output.pdf"), filename: @uploaded_file.file.filename )
       SystemCall.call('rm -r ' + folder)
+    end
+
+    def s3_downloader(bucketName, key, localPath)
+      s3 = Aws::S3::Resource.new(
+        access_key_id:     ENV['AWS_S3_ACCESS_KEY_ID'],
+        secret_access_key: ENV['AWS_S3_SECRET_ACCESS_KEY'],
+        region:            ENV['AWS_REGION']
+      )
+
+      sourceObj = s3.bucket(bucketName).object(key)
+
+      sourceObj.get(response_target: localPath)
+      puts "s3://#{bucketName}/#{key} has been downloaded to #{localPath}"
     end
 
     def no_credits_message

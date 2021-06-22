@@ -47,6 +47,14 @@
 <% end %>
 
 <br>
+
+<% if false %>
+  <%= render_async file_progress_path(@progress), interval: 1000 %>
+  <%= @progress %>
+<% end %>
+
+
+
 <br>
 
 <% if current_user %>

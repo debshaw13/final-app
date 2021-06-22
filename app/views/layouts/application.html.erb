@@ -16,6 +16,7 @@
 </head>
 
   <body>
+    <%= content_for :render_async %>
     <%= render 'layouts/header' %>
     <div class="container">
       <br>
@@ -31,6 +32,7 @@
       <% end %>
       <%= yield %>
       <%= render 'layouts/footer' %>
+
     </div>
   </body>
 </html>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_26_095855) do
+ActiveRecord::Schema.define(version: 2021_06_21_084947) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -93,6 +93,7 @@ ActiveRecord::Schema.define(version: 2021_05_26_095855) do
     t.bigint "ocr_language_id"
     t.bigint "session_id"
     t.bigint "user_id"
+    t.integer "progress"
     t.index ["ocr_language_id"], name: "index_uploaded_files_on_ocr_language_id"
     t.index ["session_id"], name: "index_uploaded_files_on_session_id"
     t.index ["user_id"], name: "index_uploaded_files_on_user_id"
