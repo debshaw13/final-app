@@ -61,7 +61,8 @@ class UploadedFilesController < ApplicationController
 
     def convert_file
       folder = SecureRandom.urlsafe_base64
-      SystemCall.call('mkdir ' + folder)
+      process1 = SystemCall.call('mkdir ' + folder)
+      puts process1.inspect
 
       s3_downloader(ENV['AWS_BUCKET'], @uploaded_file.file.key, Rails.root.to_s + '/' + folder + '/' + 'input' + '.pdf')
       path = Rails.root.to_s + '/' + folder + '/' + 'input.pdf'
@@ -101,17 +102,23 @@ class UploadedFilesController < ApplicationController
       end
 
       #@progress = 30
-      SystemCall.call('pdftoppm -r 300 -gray -tiff ' + folder_path + '/input.pdf ' + folder_path + '/image_file')
+      process2 = SystemCall.call('pdftoppm -r 300 -gray -tiff ' + folder_path + '/input.pdf ' + folder_path + '/image_file')
+      puts process2.inspect
       #@progress = 50
-      SystemCall.call('for f in ' + folder_path + '/*.tif;do tesseract -l ' + language + ' -c textonly_pdf=1 "$f" ' + folder_path +'/"$(basename "$f" .tif)" pdf;done')
+      process3 = SystemCall.call('for f in ' + folder_path + '/*.tif;do tesseract -l ' + language + ' -c textonly_pdf=1 "$f" ' + folder_path +'/"$(basename "$f" .tif)" pdf;done')
+      puts process3.inspect
       #@progress = 70
-      SystemCall.call('rm ' + folder_path + '/*.tif')
+      process4 = SystemCall.call('rm ' + folder_path + '/*.tif')
+      puts process4.inspect
       #@progress = 80
-      SystemCall.call('qpdf --empty --pages ' + folder_path + '/*.pdf -- ' + folder_path + '/merged.pdf')
+      process5 = SystemCall.call('qpdf --empty --pages ' + folder_path + '/*.pdf -- ' + folder_path + '/merged.pdf')
+      puts process5.inspect
       #@progress = 90
-      SystemCall.call('qpdf ' + path + ' --underlay ' + folder_path + '/merged.pdf -- ' + folder_path + '/output.pdf')
+      process6 = SystemCall.call('qpdf ' + path + ' --underlay ' + folder_path + '/merged.pdf -- ' + folder_path + '/output.pdf')
+      puts process6.inspect
       #@progress = 100
-      puts SystemCall.call('ls ' + folder_path)
+      process7 = puts SystemCall.call('ls ' + folder_path)
+      puts process7.inspect
 
       @uploaded_file.file.attach(io: File.open(folder_path + "/output.pdf"), filename: @uploaded_file.file.filename )
       SystemCall.call('rm -r ' + folder_path)
