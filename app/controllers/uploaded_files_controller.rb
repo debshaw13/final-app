@@ -65,6 +65,7 @@ class UploadedFilesController < ApplicationController
 
       s3_downloader(ENV['AWS_BUCKET'], @uploaded_file.file.key, Rails.root.to_s + '/' + folder + '/' + 'input' + '.pdf')
       path = Rails.root.to_s + '/' + folder + '/' + 'input.pdf'
+      folder_path = Rails.root.to_s + '/' + folder
 
       language = case @uploaded_file.ocr_language_id
         when 1
@@ -100,19 +101,20 @@ class UploadedFilesController < ApplicationController
       end
 
       #@progress = 30
-      SystemCall.call('pdftoppm -r 300 -gray -tiff ' + folder + '/input.pdf ' + folder + '/image_file')
+      SystemCall.call('pdftoppm -r 300 -gray -tiff ' + folder_path + '/input.pdf ' + folder_path + '/image_file')
       #@progress = 50
-      SystemCall.call('for f in ' + folder + '/*.tif;do tesseract -l ' + language + ' -c textonly_pdf=1 "$f" ' + folder +'/"$(basename "$f" .tif)" pdf;done')
+      SystemCall.call('for f in ' + folder_path + '/*.tif;do tesseract -l ' + language + ' -c textonly_pdf=1 "$f" ' + folder_path +'/"$(basename "$f" .tif)" pdf;done')
       #@progress = 70
-      SystemCall.call('rm ' + folder + '/*.tif')
+      SystemCall.call('rm ' + folder_path + '/*.tif')
       #@progress = 80
-      SystemCall.call('qpdf --empty --pages ' + folder + '/*.pdf -- ' + folder + '/merged.pdf')
+      SystemCall.call('qpdf --empty --pages ' + folder_path + '/*.pdf -- ' + folder_path + '/merged.pdf')
       #@progress = 90
-      SystemCall.call('qpdf ' + path + ' --underlay ' + folder + '/merged.pdf -- ' + folder + '/output.pdf')
+      SystemCall.call('qpdf ' + path + ' --underlay ' + folder_path + '/merged.pdf -- ' + folder_path + '/output.pdf')
       #@progress = 100
+      puts SystemCall.call('ls ' + folder_path)
 
-      @uploaded_file.file.attach(io: File.open("#{Rails.root}/" + folder + "/output.pdf"), filename: @uploaded_file.file.filename )
-      SystemCall.call('rm -r ' + folder)
+      @uploaded_file.file.attach(io: File.open(folder_path + "/output.pdf"), filename: @uploaded_file.file.filename )
+      SystemCall.call('rm -r ' + folder_path)
     end
 
     def s3_downloader(bucketName, key, localPath)
