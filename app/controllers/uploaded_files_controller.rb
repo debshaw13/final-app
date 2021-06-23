@@ -108,8 +108,8 @@ class UploadedFilesController < ApplicationController
       process3 = SystemCall.call('for f in ' + folder_path + '/*.tif;do tesseract -l ' + language + ' -c textonly_pdf=1 "$f" ' + folder_path +'/"$(basename "$f" .tif)" pdf;done')
       puts process3.inspect
       #@progress = 70
-      process4 = SystemCall.call('rm ' + folder_path + '/*.tif')
-      puts process4.inspect
+      #process4 = SystemCall.call('rm ' + folder_path + '/*.tif')
+      #puts process4.inspect
       #@progress = 80
       process5 = SystemCall.call('qpdf --empty --pages ' + folder_path + '/*.pdf -- ' + folder_path + '/merged.pdf')
       puts process5.inspect
