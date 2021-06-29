@@ -38,6 +38,7 @@ gem 'systemcall'
 gem 'dotenv-rails'
 gem 'render_async'
 gem 'aws-sdk', '~> 3.0'
+gem 'sidekiq', '~> 6.1.3'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
