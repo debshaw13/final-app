@@ -4,6 +4,7 @@ class StaticPagesController < ApplicationController
   end
 
   def converted
-    @uploaded_file = UploadedFile.find(params[:id])
+    @converted_file = ConvertedFile.find(params[:id])
+    @uploaded_file = UploadedFile.find(@converted_file.uploaded_file_id)
   end
 end

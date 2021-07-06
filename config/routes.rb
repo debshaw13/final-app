@@ -3,9 +3,15 @@ Rails.application.routes.draw do
 	get 'converted/:id' 				=> 'static_pages#converted', as: "converted"
 	get 'checkout'	 						=> 'checkouts#show'
 	get 'billing'								=> 'billing#show'
-	get 'file_progress'					=> 'uploaded_files#progress'
 
-	resources :uploaded_files, only: [:create, :destroy]
+	resources :uploaded_files, only: [:create, :destroy] do
+		member do
+			get 'progress'
+		end
+	end
+
+	resources :converted_files, only: [:create, :destroy] do
+	end
 
 	mount PdfjsViewer::Rails::Engine 	=> '/pdfjs', as: "pdfjs"
 

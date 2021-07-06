@@ -4,15 +4,15 @@ class UploadedFilesController < ApplicationController
     if eligible_user
       @uploaded_file = UploadedFile.create(uploaded_file_params)
       @uploaded_file.file.attach(params[:uploaded_file][:file])
-      #@progress = @uploaded_file.progress
-      #@progress = 10
       set_session_and_user_id
 
       if @uploaded_file.save
         increment_count
-        #@progress = 20
-        convert_file
-        redirect_to converted_path(@uploaded_file.id)
+        @converted_file = ConvertedFile.create(uploaded_file_id: @uploaded_file.id,ocr_language_id: @uploaded_file.ocr_language_id,session_id: @uploaded_file.session_id,user_id: @uploaded_file.user_id)
+
+        MyWorker.perform_async(@uploaded_file.id)
+
+        redirect_to converted_path(@converted_file.id)
       else
         render "static_pages/home"
       end
@@ -25,15 +25,10 @@ class UploadedFilesController < ApplicationController
 
   def progress
     @uploaded_file = UploadedFile.find(params[:id])
-    @progress = @uploaded_file.progress
-
-    render partial: 'file_progress'
-  end
-
-  def destroy
-    @uploaded_file = UploadedFile.find(params[:id])
-    @uploaded_file.destroy
-    redirect_to root_path
+    @converted_file = ConvertedFile.find_by(uploaded_file_id: @uploaded_file.id)
+    if @uploaded_file.progress == 95 && @converted_file.file.attached?
+      @uploaded_file.update(progress: 100)
+    end
   end
 
   private
@@ -57,23 +52,6 @@ class UploadedFilesController < ApplicationController
       elsif !current_user
         @session.increment(:count).save
       end
-    end
-
-    def convert_file
-      MyWorker.perform_async(@uploaded_file.id)
-    end
-
-    def s3_downloader(bucketName, key, localPath)
-      s3 = Aws::S3::Resource.new(
-        access_key_id:     ENV['AWS_S3_ACCESS_KEY_ID'],
-        secret_access_key: ENV['AWS_S3_SECRET_ACCESS_KEY'],
-        region:            ENV['AWS_REGION']
-      )
-
-      sourceObj = s3.bucket(bucketName).object(key)
-
-      sourceObj.get(response_target: localPath)
-      puts "s3://#{bucketName}/#{key} has been downloaded to #{localPath}"
     end
 
     def no_credits_message

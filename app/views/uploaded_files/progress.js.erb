@@ -1,0 +1,16 @@
+var fileId = "<%= @uploaded_file.id %>";
+var progress = "<%= @uploaded_file.progress %>";
+var error = "<%= @converted_file.error %>";
+
+switch(progress) {
+  case "100":
+    $('#converter-div').html("<%= escape_javascript render(:partial => 'static_pages/converted_file', :locals => {:converted_file => @converted_file}) %>");
+    break;
+  case "0":
+    $('#converter-div').html("Your file failed to convert. This was the automatically generated error message:");
+    $('#converter-div').html(error);
+    break;
+  default:
+    $(".progress-bar").css("width", progress + "%");
+    setTimeout(checkForUpdate, 5000, fileId);
+}

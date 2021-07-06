@@ -32,35 +32,27 @@
   </div>
 </div>
 
-<%= form_with model: @uploaded_file, local: true do |f| %>
-<div class="row">
-  <div class="col md-4 text-center">
-    <%= f.file_field :file, class: "form-control" %>
+<%= form_with model: @uploaded_file, local: false do |f| %>
+  <div class="row">
+    <div class="col md-4 text-center">
+      <%= f.file_field :file, class: "form-control" %>
+    </div>
+    <div class="col md-4 text-center">
+      <%= f.select :ocr_language_id, OcrLanguage.all.collect { |p| [ p.language, p.id ] }, { selected: "5" }, { class: "form-select" } %>
+    </div>
+    <div class="col md-4 text-center">
+      <%= f.submit "Convert", class: "btn btn-success w-100" %>
+    </div>
   </div>
-  <div class="col md-4 text-center">
-    <%= f.select :ocr_language_id, OcrLanguage.all.collect { |p| [ p.language, p.id ] }, { selected: "5" }, { class: "form-select" } %>
-  </div>
-  <div class="col md-4 text-center">
-    <%= f.submit "Convert", class: "btn btn-success w-100" %>
-  </div>
-</div>
 <% end %>
 
 <br>
-
-<% if false %>
-  <%= render_async file_progress_path(@progress), interval: 1000 %>
-  <%= @progress %>
-<% end %>
-
-
-
 <br>
 
 <% if current_user %>
-  <% @created_files = current_user.uploaded_files %>
+  <% @created_files = current_user.converted_files %>
 <% else %>
-  <% @created_files = @session.uploaded_files.where(user_id: nil) %>
+  <% @created_files = @session.converted_files.where(user_id: nil) %>
 <% end %>
 
 <% if @created_files.any? %>
@@ -81,15 +73,17 @@
         </thead>
         <tbody>
           <% @created_files.each do |created_file| %>
-          <tr>
-            <td><%= link_to created_file.file.filename, converted_path(created_file.id) %></td>
-            <td><%= time_ago_in_words(created_file.created_at) + ' ago' %></td>
-            <td class="px-4"><span style="float: right;">
-              <%= link_to uploaded_file_path(created_file.id), id: "trashcan", method: :delete do %>
-                        <i class="far fa-trash-alt"></i>
-                      <% end %>
-            </span></td>
-          </tr>
+            <% if created_file.file.attached? %>
+              <tr>
+                <td><%= link_to created_file.file.filename, converted_path(created_file.id) %></td>
+                <td><%= time_ago_in_words(created_file.created_at) + ' ago' %></td>
+                <td class="px-4"><span style="float: right;">
+                  <%= link_to converted_file_path(created_file.id), id: "trashcan", method: :delete do %>
+                            <i class="far fa-trash-alt"></i>
+                          <% end %>
+                </span></td>
+              </tr>
+            <% end %>
           <% end %>
         </tbody>
       </table>

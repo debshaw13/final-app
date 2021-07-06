@@ -6,4 +6,5 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   has_many :uploaded_files
+  has_many :converted_files
 end

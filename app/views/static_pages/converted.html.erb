@@ -1,17 +1,32 @@
 <% provide(:title, "Converted File") %>
-
-<br>
-<br>
-
-<div class="row text-center">
-  <h2>Download your converted file</h2>
-  <%= link_to rails_blob_path(@uploaded_file.file, disposition: 'attachment') do%>
-    <button type="button" class="btn btn-primary">Download Converted PDF</button>
+<% if @uploaded_file.progress == 100 %>
+  <%= render(partial: "converted_file", locals: {:converted_file => @converted_file}) %>
+<% elsif @uploaded_file.progress == 0 %>
+  Your file failed to convert. This was the automatically generated error message:
+  <br>
+  <br>
+  <b><%= @converted_file.error %></b>
+  <br>
+  <br>
+  <%= link_to root_path do%>
+    <button type="button" class="btn btn-primary">Back to Home</button>
   <%end%>
-</div>
+<% else %>
+  <div id="converter-div">
+    <div class="progress">
+      <div class="progress-bar" role="progressbar" style="width: <%= @uploaded_file.progress %>%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+  </div>
 
-<hr>
+  <script type="text/javascript">
+    var fileId = "<%= @uploaded_file.id %>";
 
-<div class="row min-vh-100">
-  <iframe src="<%= pdfjs.full_path(file: rails_blob_path(@uploaded_file.file)) %>"></iframe>
-</div>
+    function checkForUpdate(fileId) {
+        $.ajax({
+          url: "/uploaded_files/" + fileId + "/progress",
+          method: "GET"
+        })
+    }
+    setTimeout(checkForUpdate, 5000, fileId);
+  </script>
+<% end %>
