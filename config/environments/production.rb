@@ -123,5 +123,5 @@ Rails.application.configure do
     password:ENV["GMAIL_PASSWORD"]
   }
 
-  config.action_mailer.default_url_options = { host: 'guarded-earth-04135.herokuapp.com' }
+  config.action_mailer.default_url_options = { host: 'railsocr.herokuapp.com' }
 end
